@@ -21,32 +21,35 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-async function getTeamData(userId: string, role: string) {
-  // If Captain, show the team they manage. 
-  // If Player, show the team(s) they are in.
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    include: {
-      managedTeams: {
-        include: {
-          members: true,
-          _count: { select: { registrations: true } }
-        }
-      },
-      joinedTeams: {
-        include: {
-          members: true,
-          _count: { select: { registrations: true } }
-        }
-      },
-      registrations: {
-        include: { tournament: true, team: true },
-        orderBy: { createdAt: "desc" }
-      }
-    }
-  });
+export const dynamic = "force-dynamic";
 
-  return user;
+async function getTeamData(userId: string, role: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        managedTeams: {
+          include: {
+            members: true,
+            _count: { select: { registrations: true } }
+          }
+        },
+        joinedTeams: {
+          include: {
+            members: true,
+            _count: { select: { registrations: true } }
+          }
+        },
+        registrations: {
+          include: { tournament: true, team: true },
+          orderBy: { createdAt: "desc" }
+        }
+      }
+    });
+    return user;
+  } catch {
+    return null;
+  }
 }
 
 export default async function TeamDashboard() {

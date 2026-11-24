@@ -5,10 +5,16 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { ProfileCard } from "@/components/profile/ProfileCard";
 
+export const dynamic = "force-dynamic";
+
 async function getUserData(userId: string) {
-  return await prisma.user.findUnique({
-    where: { id: userId },
-  });
+  try {
+    return await prisma.user.findUnique({
+      where: { id: userId },
+    });
+  } catch {
+    return null;
+  }
 }
 
 export default async function ProfilePage() {

@@ -14,17 +14,22 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/ui/PageHeader";
 
+export const dynamic = "force-dynamic";
+
 export default async function TournamentResultPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   
-  const tournament = await prisma.tournament.findUnique({
-    where: { id },
-    include: {
-      matches: {
-        orderBy: { createdAt: 'desc' }
+  let tournament = null;
+  try {
+    tournament = await prisma.tournament.findUnique({
+      where: { id },
+      include: {
+        matches: {
+          orderBy: { createdAt: 'desc' }
+        }
       }
-    }
-  });
+    });
+  } catch {}
 
   if (!tournament || tournament.status !== "completed") {
     return (

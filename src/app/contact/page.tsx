@@ -3,13 +3,18 @@ import { prisma } from '@/lib/prisma'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Mail, Phone, MapPin, Send, MessageSquare, ShieldCheck } from 'lucide-react'
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: 'Contact TribeX Esports | Professional Support Protocol',
   description: 'Connect with the TribeX Esports support team for tournament inquiries, partnership opportunities, and technical assistance.',
 }
 
 export default async function ContactPage() {
-  const settings = await prisma.siteSettings.findFirst()
+  let settings = null;
+  try {
+    settings = await prisma.siteSettings.findFirst();
+  } catch {}
 
   return (
     <main className="bg-black min-h-screen selection:bg-primary selection:text-white pb-32">

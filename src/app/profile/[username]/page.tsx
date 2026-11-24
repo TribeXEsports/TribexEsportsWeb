@@ -9,17 +9,21 @@ interface PublicProfilePageProps {
   }>;
 }
 
+export const dynamic = "force-dynamic";
+
 async function getUserData(username: string) {
-  // We lowercase the username to ensure case-insensitive matching if needed, 
-  // though typically it should match exactly what's in DB
-  return await prisma.user.findFirst({
-    where: { 
-      username: {
-        equals: username,
-        mode: 'insensitive' // Ensure we find them even if case differs
-      }
-    },
-  });
+  try {
+    return await prisma.user.findFirst({
+      where: { 
+        username: {
+          equals: username,
+          mode: 'insensitive'
+        }
+      },
+    });
+  } catch {
+    return null;
+  }
 }
 
 export default async function PublicProfilePage({ params }: PublicProfilePageProps) {

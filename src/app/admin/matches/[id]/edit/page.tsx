@@ -4,16 +4,21 @@ import { ChevronLeft, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
+export const dynamic = "force-dynamic";
+
 export default async function MatchEditPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   
-  const match = await prisma.match.findUnique({
-    where: { id },
-    include: {
-        tournament: true,
-        room: true
-    }
-  });
+  let match = null;
+  try {
+    match = await prisma.match.findUnique({
+      where: { id },
+      include: {
+          tournament: true,
+          room: true
+      }
+    });
+  } catch {}
 
   if (!match) return <div>Match details not found.</div>;
 

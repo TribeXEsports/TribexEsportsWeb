@@ -4,13 +4,18 @@ import { Target, Users2, Rocket, Trophy, Shield, Zap, ArrowRight } from 'lucide-
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: 'About TribeX Esports | The Evolution of Competitive Gaming',
   description: 'TribeX Esports is a high-performance gaming ecosystem dedicated to competition, community, and the elite gaming experience.',
 }
 
 export default async function AboutPage() {
-  const settings = await prisma.siteSettings.findFirst()
+  let settings = null;
+  try {
+    settings = await prisma.siteSettings.findFirst();
+  } catch {}
 
   return (
     <main className="bg-black min-h-screen selection:bg-primary selection:text-white">
