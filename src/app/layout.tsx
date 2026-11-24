@@ -10,7 +10,11 @@ const fontVariables = "--font-inter inter-fallback --font-heading saira-fallback
 
 // Cache DB calls for Request Memoization to optimize TTFB
 const getSettings = cache(async () => {
-  return await prisma.siteSettings.findFirst();
+  try {
+    return await prisma.siteSettings.findFirst();
+  } catch {
+    return null;
+  }
 });
 
 // Static Metadata for fallback
@@ -51,10 +55,10 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Static Optimization Enabled: force-dynamic removed to allow LCP/FCP caching.
+export const dynamic = "force-dynamic";
 
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import { GlobalAuthObserver } from "@/components/auth/GlobalAuthObserver";
 import { Header } from "@/components/layout/Header";
 import AuthProvider from "@/components/providers/AuthProvider";
@@ -62,7 +66,7 @@ import { SettingsProvider } from "@/components/providers/SettingsProvider";
 import { ClientLayoutComponents } from "@/components/layout/ClientLayoutComponents";
 import { prisma } from "@/lib/prisma";
 
-const Footer = dynamic(() => import("@/components/layout/Footer").then(m => m.Footer));
+const Footer = nextDynamic(() => import("@/components/layout/Footer").then(m => m.Footer));
 
 export default async function RootLayout({
   children,
